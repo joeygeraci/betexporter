@@ -1,0 +1,659 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #18191a;
+  background: #e9e7e2;
+  font-synthesis: none;
+  --ink: #17191a;
+  --paper: #faf9f5;
+  --muted: #73736f;
+  --line: #d9d6cf;
+  --red: #c9342d;
+  --blue: #326aa1;
+  --cream: #f1eee6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 920px;
+  margin: 0;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.78), transparent 45%),
+    #e9e7e2;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.toolbar {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 230px 250px auto;
+  align-items: end;
+  gap: 18px;
+  min-height: 84px;
+  padding: 14px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8f6f1;
+  background: rgba(20, 22, 23, 0.97);
+  box-shadow: 0 12px 35px rgba(26, 27, 27, 0.16);
+  backdrop-filter: blur(16px);
+}
+
+.toolbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  align-self: center;
+}
+
+.toolbar__brand div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toolbar__brand strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+}
+
+.toolbar__brand span:not(.toolbar__mark) {
+  color: #898e92;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.toolbar__mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--red);
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field span {
+  color: #92969a;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.field input {
+  width: 100%;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid #404346;
+  border-radius: 7px;
+  outline: none;
+  color: #f7f4ee;
+  background: #27292b;
+  font-size: 11px;
+}
+
+.field input:focus {
+  border-color: #d8655f;
+  box-shadow: 0 0 0 3px rgba(201, 52, 45, 0.16);
+}
+
+.toolbar__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.button--primary {
+  color: #fff;
+  background: var(--red);
+}
+
+.button--primary:hover {
+  background: #dc3d35;
+}
+
+.button--secondary {
+  border-color: #45484b;
+  color: #e5e2dc;
+  background: #292b2d;
+}
+
+.page {
+  width: 8.5in;
+  min-height: 11in;
+  margin: 38px auto 80px;
+  padding: 0.42in;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(25, 26, 26, 0.018) 1px, transparent 1px),
+    linear-gradient(rgba(25, 26, 26, 0.018) 1px, transparent 1px),
+    var(--paper);
+  background-size: 18px 18px;
+  box-shadow: 0 22px 65px rgba(34, 34, 32, 0.18);
+}
+
+.report-header {
+  position: relative;
+  margin-bottom: 18px;
+  padding: 22px 24px 0;
+  overflow: hidden;
+  border-radius: 8px;
+  color: #f8f5ef;
+  background:
+    radial-gradient(circle at 84% -35%, rgba(201, 52, 45, 0.46), transparent 48%),
+    var(--ink);
+}
+
+.report-header::after {
+  position: absolute;
+  top: -55px;
+  right: 145px;
+  width: 1px;
+  height: 220px;
+  background: rgba(255, 255, 255, 0.08);
+  content: "";
+  transform: rotate(24deg);
+}
+
+.report-header__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #a5a6a3;
+  font-size: 7.5px;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.report-header__topline p,
+.report-header__title-row p,
+.report-header__title-row h1,
+.report-intro p,
+.report-footer p,
+.fight-card p,
+.fight-card h2,
+.bet-row p {
+  margin: 0;
+}
+
+.report-header__topline span {
+  color: #e05a53;
+}
+
+.report-header__title-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 104px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.report-header__title-row h1 {
+  max-width: 560px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-weight: 550;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.report-header__title-row p {
+  min-height: 14px;
+  margin-top: 9px;
+  color: #c7c5c0;
+  font-size: 8px;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.report-mark {
+  display: grid;
+  width: 62px;
+  height: 62px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  background: var(--red);
+  box-shadow: 0 14px 32px rgba(201, 52, 45, 0.22);
+  font-family: Georgia, serif;
+  font-size: 38px;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0 -24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.summary__item {
+  display: flex;
+  min-height: 55px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary__item:last-child {
+  border-right: 0;
+}
+
+.summary__item span {
+  margin-bottom: 5px;
+  color: #91928f;
+  font-size: 6.5px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.summary__item strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.summary__item--accent strong {
+  color: #f0746d;
+}
+
+.report-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 2px;
+  color: var(--muted);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.report-intro strong {
+  color: var(--ink);
+  font-size: 8px;
+}
+
+.key {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px 0 8px;
+  border-radius: 50%;
+}
+
+.key--red {
+  background: var(--red);
+}
+
+.key--blue {
+  background: var(--blue);
+}
+
+.fight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+}
+
+.fight-card {
+  overflow: hidden;
+  border: 1px solid #d5d2cb;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.88);
+  break-inside: avoid;
+}
+
+.fight-card__header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  min-height: 48px;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 11px;
+  color: #f8f5ef;
+  background: #202223;
+}
+
+.fight-card__header::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--red) 0 49.5%, var(--cream) 49.5% 50.5%, var(--blue) 50.5% 100%);
+  content: "";
+}
+
+.fight-card--parlay .fight-card__header::before {
+  background: #c08b2d;
+}
+
+.fight-number {
+  color: #7d8080;
+  font-family: Georgia, serif;
+  font-size: 19px;
+  font-style: italic;
+  text-align: center;
+}
+
+.fight-card__heading span,
+.fight-card__total span {
+  display: block;
+  margin-bottom: 3px;
+  color: #828584;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fight-card__heading h2 {
+  overflow: hidden;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.16;
+  text-overflow: ellipsis;
+}
+
+.fight-card__total {
+  min-width: 51px;
+  text-align: right;
+}
+
+.fight-card__total strong {
+  font-family: Georgia, serif;
+  font-size: 11px;
+}
+
+.bet-row {
+  position: relative;
+  padding: 10px 11px 9px 14px;
+  border-bottom: 1px solid #e3e0da;
+}
+
+.bet-row:last-child {
+  border-bottom: 0;
+}
+
+.bet-row::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: #a2a3a0;
+  content: "";
+}
+
+.bet-row--red::before {
+  background: var(--red);
+}
+
+.bet-row--blue::before {
+  background: var(--blue);
+}
+
+.bet-row--parlay::before {
+  background: #c08b2d;
+}
+
+.bet-row__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  color: #8a8985;
+  font-size: 5.8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.outcome-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.outcome-box::after {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #a7a59f;
+  border-radius: 2px;
+  content: "";
+}
+
+.bet-row__pick {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.bet-row__pick strong {
+  display: block;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.18;
+}
+
+.odds {
+  min-width: 34px;
+  padding: 3px 5px;
+  border: 1px solid #d9d5cd;
+  border-radius: 4px;
+  color: #4d4c49;
+  background: #f4f1ea;
+  font-size: 7px;
+  font-weight: 850;
+  text-align: center;
+}
+
+.money-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid #e2ded7;
+  border-radius: 4px;
+  background: #f8f6f1;
+}
+
+.money-grid div {
+  padding: 5px 7px;
+  border-right: 1px solid #e2ded7;
+}
+
+.money-grid div:last-child {
+  border-right: 0;
+}
+
+.money-grid span {
+  display: block;
+  margin-bottom: 2px;
+  color: #96938c;
+  font-size: 5.2px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.money-grid strong {
+  font-size: 8.5px;
+}
+
+.money-grid div:last-child strong {
+  color: #a52d27;
+}
+
+.parlay-legs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 9px;
+}
+
+.parlay-leg {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: start;
+  gap: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted #dedbd4;
+}
+
+.parlay-leg:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.parlay-leg__number {
+  display: grid;
+  width: 13px;
+  height: 13px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #8b6a2e;
+  font-size: 5.5px;
+  font-weight: 800;
+}
+
+.parlay-leg strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 8px;
+  line-height: 1.12;
+}
+
+.parlay-leg small {
+  display: block;
+  margin-top: 2px;
+  color: #87847e;
+  font-size: 5.7px;
+  line-height: 1.15;
+}
+
+.report-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 8px;
+  border-top: 1px solid #d6d2ca;
+  color: #85837e;
+  font-size: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.empty-state {
+  width: 480px;
+  margin: 100px auto;
+  padding: 55px;
+  border-radius: 18px;
+  background: #faf9f5;
+  box-shadow: 0 20px 60px rgba(30, 30, 28, 0.14);
+  text-align: center;
+}
+
+.empty-state__mark {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 20px;
+  place-items: center;
+  border-radius: 13px;
+  color: #fff;
+  background: var(--red);
+  font-family: Georgia, serif;
+  font-size: 30px;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.empty-state h1 {
+  margin: 0 0 10px;
+  font-family: Georgia, serif;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@page {
+  size: letter portrait;
+  margin: 0;
+}
+
+@media print {
+  :root,
+  body {
+    min-width: 0;
+    background: #fff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    margin: 0;
+    padding: 0.35in;
+    overflow: visible;
+    box-shadow: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .fight-card,
+  .bet-row,
+  .report-header {
+    break-inside: avoid;
+  }
+}

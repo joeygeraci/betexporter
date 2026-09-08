@@ -1,29 +1,36 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Bet Exporter</title>
-    <style type="text/css">
-      .actions {
-        width: 300px;
-        padding: 20px;
-        background-color: #FFF;
-      }
-      .action-button {
-        display: block;
-        padding: 10px 14px;
-        background-color: #EEE;
-        border-radius: 5px;
-        text-align: center;
-        color: #000;
-        text-decoration: none;
-        text-transform: uppercase;
-      }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fight Night Bet Sheet</title>
+    <link rel="stylesheet" href="src/popup.css">
   </head>
   <body>
-    <div class="actions">
-      <a id="exportBets" href="#" class="action-button">Export bets</a>
-    </div>
+    <main class="popup">
+      <header class="brand">
+        <div class="brand__mark" aria-hidden="true">B</div>
+        <div>
+          <p class="eyebrow">BET EXPORTER</p>
+          <h1>Fight Night Sheet</h1>
+        </div>
+      </header>
+
+      <section class="status-card" aria-live="polite">
+        <span class="status-dot" id="statusDot"></span>
+        <div>
+          <p class="status-card__title" id="statusTitle">Checking this page…</p>
+          <p class="status-card__detail" id="statusDetail">Looking for fight bets in your transaction list.</p>
+        </div>
+      </section>
+
+      <button class="primary-button" id="createReport" type="button" disabled>
+        <span id="buttonLabel">Create printable sheet</span>
+        <span class="button-arrow" aria-hidden="true">→</span>
+      </button>
+
+      <p class="privacy-note">Your bet data stays in this browser and is cleared when Chrome closes.</p>
+    </main>
+    <script src="src/popup.js"></script>
   </body>
-  <script src="src/popup.js"></script>
 </html>

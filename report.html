@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fight Night Bet Sheet</title>
+    <link rel="stylesheet" href="src/report.css">
+  </head>
+  <body>
+    <aside class="toolbar no-print">
+      <div class="toolbar__brand">
+        <span class="toolbar__mark">B</span>
+        <div>
+          <strong>Fight Night Bet Sheet</strong>
+          <span>Print preview</span>
+        </div>
+      </div>
+
+      <label class="field">
+        <span>Sheet title</span>
+        <input id="titleInput" type="text" value="Fight Night Bets" maxlength="60">
+      </label>
+
+      <label class="field">
+        <span>Event note</span>
+        <input id="noteInput" type="text" placeholder="UFC 000 · Main card" maxlength="80">
+      </label>
+
+      <div class="toolbar__actions">
+        <button class="button button--secondary" id="downloadCsv" type="button">Download CSV</button>
+        <button class="button button--primary" id="printReport" type="button">Print / Save PDF</button>
+      </div>
+    </aside>
+
+    <main class="page" id="reportPage" hidden>
+      <header class="report-header">
+        <div class="report-header__topline">
+          <p><span>BET EXPORTER</span> / PERSONAL FIGHT CARD</p>
+          <p id="rangeLabel"></p>
+        </div>
+        <div class="report-header__title-row">
+          <div>
+            <h1 id="reportTitle">Fight Night Bets</h1>
+            <p id="reportNote"></p>
+          </div>
+          <div class="report-mark" aria-hidden="true">B</div>
+        </div>
+        <section class="summary" aria-label="Bet totals">
+          <div class="summary__item">
+            <span>BETS</span>
+            <strong id="betCount">0</strong>
+          </div>
+          <div class="summary__item">
+            <span>TOTAL RISK</span>
+            <strong id="totalRisk">$0.00</strong>
+          </div>
+          <div class="summary__item">
+            <span>TO WIN</span>
+            <strong id="totalWin">$0.00</strong>
+          </div>
+          <div class="summary__item summary__item--accent">
+            <span>POT. RETURN</span>
+            <strong id="totalPayout">$0.00</strong>
+          </div>
+        </section>
+      </header>
+
+      <section class="report-intro">
+        <p><strong id="matchupCount">0 matchups</strong> on this sheet</p>
+        <p><span class="key key--red"></span> first corner <span class="key key--blue"></span> second corner</p>
+      </section>
+
+      <section class="fight-grid" id="fightGrid"></section>
+
+      <footer class="report-footer">
+        <p id="capturedLabel"></p>
+        <p>Potential totals add every ticket · Conflicting picks cannot all win</p>
+      </footer>
+    </main>
+
+    <section class="empty-state" id="emptyState" hidden>
+      <div class="empty-state__mark">B</div>
+      <h1>No report data found</h1>
+      <p>Return to Bovada’s Account Transactions page and create a new sheet.</p>
+    </section>
+
+    <script src="src/report.js"></script>
+  </body>
+</html>
