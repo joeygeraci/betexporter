@@ -18,7 +18,7 @@
 }
 
 body {
-  min-width: 920px;
+  min-width: 0;
   margin: 0;
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.78), transparent 45%),
@@ -148,10 +148,10 @@ input {
 }
 
 .page {
-  width: 8.5in;
-  min-height: 11in;
+  width: min(148mm, calc(100vw - 32px));
+  min-height: 210mm;
   margin: 38px auto 80px;
-  padding: 0.42in;
+  padding: 0.3in;
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(25, 26, 26, 0.018) 1px, transparent 1px),
@@ -161,6 +161,19 @@ input {
   box-shadow: 0 22px 65px rgba(34, 34, 32, 0.18);
 }
 
+.page.page--print-measure {
+  position: absolute;
+  top: 0;
+  left: -10000px;
+  width: 148mm;
+  min-height: 0;
+  margin: 0;
+  padding: 0.28in;
+  overflow: visible;
+  visibility: hidden;
+  box-shadow: none;
+}
+
 .report-header {
   position: relative;
   margin-bottom: 18px;
@@ -168,9 +181,7 @@ input {
   overflow: hidden;
   border-radius: 8px;
   color: #f8f5ef;
-  background:
-    radial-gradient(circle at 84% -35%, rgba(201, 52, 45, 0.46), transparent 48%),
-    var(--ink);
+  background: var(--ink);
 }
 
 .report-header::after {
@@ -220,9 +231,9 @@ input {
 }
 
 .report-header__title-row h1 {
-  max-width: 560px;
+  max-width: 370px;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 34px;
+  font-size: 29px;
   font-weight: 550;
   letter-spacing: -0.035em;
   line-height: 1;
@@ -243,12 +254,12 @@ input {
   width: 62px;
   height: 62px;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 16px;
-  background: var(--red);
-  box-shadow: 0 14px 32px rgba(201, 52, 45, 0.22);
+  border: 0;
+  color: #e05a53;
+  background: transparent;
+  box-shadow: none;
   font-family: Georgia, serif;
-  font-size: 38px;
+  font-size: 46px;
   font-weight: 800;
   font-style: italic;
 }
@@ -327,7 +338,7 @@ input {
 
 .fight-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 12px;
 }
@@ -388,7 +399,7 @@ input {
 .fight-card__heading h2 {
   overflow: hidden;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.16;
@@ -402,7 +413,7 @@ input {
 
 .fight-card__total strong {
   font-family: Georgia, serif;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bet-row {
@@ -443,7 +454,7 @@ input {
   justify-content: space-between;
   margin-bottom: 6px;
   color: #8a8985;
-  font-size: 5.8px;
+  font-size: 6.8px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -475,7 +486,7 @@ input {
   display: block;
   color: var(--ink);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
   line-height: 1.18;
 }
@@ -487,7 +498,7 @@ input {
   border-radius: 4px;
   color: #4d4c49;
   background: #f4f1ea;
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 850;
   text-align: center;
 }
@@ -513,13 +524,13 @@ input {
   display: block;
   margin-bottom: 2px;
   color: #96938c;
-  font-size: 5.2px;
+  font-size: 6.2px;
   font-weight: 800;
   letter-spacing: 0.08em;
 }
 
 .money-grid strong {
-  font-size: 8.5px;
+  font-size: 10px;
 }
 
 .money-grid div:last-child strong {
@@ -562,7 +573,7 @@ input {
 .parlay-leg strong {
   display: block;
   font-family: Georgia, serif;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.12;
 }
 
@@ -570,7 +581,7 @@ input {
   display: block;
   margin-top: 2px;
   color: #87847e;
-  font-size: 5.7px;
+  font-size: 6.7px;
   line-height: 1.15;
 }
 
@@ -625,7 +636,7 @@ input {
 }
 
 @page {
-  size: letter portrait;
+  size: A5 portrait;
   margin: 0;
 }
 
@@ -641,10 +652,10 @@ input {
   }
 
   .page {
-    width: 8.5in;
-    min-height: 11in;
+    width: 148mm;
+    min-height: 0;
     margin: 0;
-    padding: 0.35in;
+    padding: 0.28in;
     overflow: visible;
     box-shadow: none;
     print-color-adjust: exact;

@@ -22,7 +22,7 @@ After making code changes, return to `chrome://extensions` and click the extensi
 4. Optionally edit the sheet title or event note.
 5. Click **Print / Save PDF**. Use Chrome’s print dialog to print the sheet or save it as a PDF.
 
-The report groups straight bets by matchup and keeps multi-leg parlays together. Each bet shows its selection, American odds, amount risked, potential profit (`To Win`), and total payout (risk + profit). The CSV button provides the same captured data in a spreadsheet-friendly format.
+The report keeps an A5-width layout, stacks straight bets by matchup, and keeps multi-leg parlays together. When you click **Print / Save PDF**, its page height is measured automatically so the entire sheet prints as one continuous PDF page instead of being split across fixed-size pages. **Save PNG** renders that same complete sheet as one long, high-resolution image. Each bet shows its selection, American odds, amount risked, potential profit (`To Win`), and total payout (risk + profit). Summary winnings use only the highest result in each matchup, since mutually exclusive picks cannot all win; parlays count as separate tickets. PDF, PNG, and CSV filenames include the capture date. The CSV button provides the same captured data in a spreadsheet-friendly format.
 
 ## Scope
 
@@ -46,6 +46,7 @@ No build step or package installation is required. The code uses standard Manife
 - `src/content.js` — scoped page messaging and report capture
 - `popup.html`, `src/popup.*` — extension toolbar interface
 - `report.html`, `src/report.*` — editable, printable report and CSV export
+- `src/png-renderer.js` — safe, direct-canvas renderer for the long PNG export
 - `src/service-worker.js` — enables the extension action only on the supported Bovada page
 - `example/page.html` — saved Bovada markup used to verify selectors
 
@@ -56,4 +57,5 @@ On macOS, the dependency-free extractor test can be run with:
 ```sh
 /System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc tests/extractor.test.js
 /System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc tests/report.test.js
+/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc tests/png-renderer.test.js
 ```

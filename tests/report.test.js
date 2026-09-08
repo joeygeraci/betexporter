@@ -1,3 +1,5 @@
+const writeLine = globalThis.print;
+
 class FakeElement {
   constructor() {
     this.children = [];
@@ -7,6 +9,11 @@ class FakeElement {
     this.textContent = "";
     this.value = "";
     this.listeners = {};
+    this.scrollHeight = 0;
+    this.classList = {
+      values: [],
+      add: (...values) => this.classList.values.push(...values)
+    };
   }
 
   append(...children) {
@@ -19,6 +26,20 @@ class FakeElement {
 
   addEventListener(type, listener) {
     this.listeners[type] = listener;
+  }
+
+  cloneNode() {
+    const clone = new FakeElement();
+    clone.scrollHeight = this.scrollHeight;
+    return clone;
+  }
+
+  removeAttribute() {}
+
+  setAttribute() {}
+
+  remove() {
+    this.removed = true;
   }
 }
 
@@ -39,21 +60,44 @@ for (const id of [
   "fightGrid",
   "capturedLabel",
   "downloadCsv",
+  "downloadPng",
   "printReport"
 ]) {
   elements.set(id, new FakeElement());
 }
 elements.get("titleInput").value = "Fight Night Bets";
+elements.get("reportPage").scrollHeight = 1440;
+
+const documentHead = new FakeElement();
+const documentBody = new FakeElement();
+const reportStyleSheet = {
+  href: "chrome-extension://test/src/report.css",
+  cssRules: [],
+  insertRule(rule, index) {
+    this.cssRules.splice(index, 0, rule);
+  },
+  deleteRule(index) {
+    this.cssRules.splice(index, 1);
+  }
+};
+let printWasCalled = false;
 
 globalThis.window = globalThis;
 globalThis.document = {
   title: "",
+  head: documentHead,
+  body: documentBody,
+  styleSheets: [reportStyleSheet],
   querySelector(selector) {
     return elements.get(selector.replace(/^#/, ""));
   },
   createElement() {
     return new FakeElement();
   }
+};
+globalThis.requestAnimationFrame = (callback) => callback();
+globalThis.print = () => {
+  printWasCalled = true;
 };
 globalThis.chrome = {
   storage: {
@@ -130,9 +174,16 @@ function assert(condition, message) {
 assert(elements.get("reportPage").hidden === false, "Expected the report to become visible");
 assert(elements.get("betCount").textContent === "3", "Expected three bets");
 assert(elements.get("totalRisk").textContent === "$50.00", "Expected the risk total");
-assert(elements.get("totalWin").textContent === "$230.00", "Expected the potential profit total");
-assert(elements.get("totalPayout").textContent === "$280.00", "Expected the payout total");
+assert(elements.get("totalWin").textContent === "$175.00", "Expected the best-case profit total");
+assert(elements.get("totalPayout").textContent === "$215.00", "Expected the best-case payout total");
 assert(elements.get("matchupCount").textContent === "1 matchup", "Expected one straight-bet matchup");
 assert(elements.get("fightGrid").children.length === 2, "Expected one matchup card and one parlay card");
+assert(document.title === "Fight Night Bets - 2026-09-04", "Expected a dated PDF filename with a plain hyphen");
+assert(typeof elements.get("downloadPng").listeners.click === "function", "Expected a PNG download action");
 
-print("Report tests passed");
+elements.get("printReport").listeners.click();
+assert(reportStyleSheet.cssRules.length === 1, "Expected a dynamic print-size rule");
+assert(reportStyleSheet.cssRules[0].includes("size: 148mm 393mm"), "Expected one buffered custom-height print page");
+assert(printWasCalled, "Expected the print dialog to open after measuring");
+
+writeLine("Report tests passed");

@@ -28,6 +28,7 @@
 
       <div class="toolbar__actions">
         <button class="button button--secondary" id="downloadCsv" type="button">Download CSV</button>
+        <button class="button button--secondary" id="downloadPng" type="button">Save PNG</button>
         <button class="button button--primary" id="printReport" type="button">Print / Save PDF</button>
       </div>
     </aside>
@@ -55,11 +56,11 @@
             <strong id="totalRisk">$0.00</strong>
           </div>
           <div class="summary__item">
-            <span>TO WIN</span>
+            <span>BEST-CASE WIN</span>
             <strong id="totalWin">$0.00</strong>
           </div>
           <div class="summary__item summary__item--accent">
-            <span>POT. RETURN</span>
+            <span>BEST RETURN</span>
             <strong id="totalPayout">$0.00</strong>
           </div>
         </section>
@@ -74,7 +75,7 @@
 
       <footer class="report-footer">
         <p id="capturedLabel"></p>
-        <p>Potential totals add every ticket · Conflicting picks cannot all win</p>
+        <p>Best case uses the highest ticket per matchup · Parlays count separately</p>
       </footer>
     </main>
 
@@ -84,6 +85,7 @@
       <p>Return to Bovada’s Account Transactions page and create a new sheet.</p>
     </section>
 
+    <script src="src/png-renderer.js"></script>
     <script src="src/report.js"></script>
   </body>
 </html>

@@ -14,10 +14,13 @@ const ui = {
   fightGrid: document.querySelector("#fightGrid"),
   capturedLabel: document.querySelector("#capturedLabel"),
   downloadCsv: document.querySelector("#downloadCsv"),
+  downloadPng: document.querySelector("#downloadPng"),
   printReport: document.querySelector("#printReport")
 };
 
 let currentReport = null;
+let dynamicPrintStyleSheet = null;
+let dynamicPrintRuleIndex = null;
 
 function createElement(tagName, className, text) {
   const element = document.createElement(tagName);
@@ -36,6 +39,16 @@ function money(amount) {
 
 function sum(bets, property) {
   return bets.reduce((total, bet) => total + (Number(bet[property]) || 0), 0);
+}
+
+function bestCaseSum(groups, property) {
+  return groups.reduce((total, group) => {
+    const values = group.entries.map((entry) => Number(entry.bet[property]) || 0);
+    const groupValue = group.type === "parlay"
+      ? values.reduce((subtotal, value) => subtotal + value, 0)
+      : Math.max(0, ...values);
+    return total + groupValue;
+  }, 0);
 }
 
 function matchupSides(event) {
@@ -105,7 +118,7 @@ function renderSingleBet(entry, index) {
   const pick = createElement("div", "bet-row__pick");
   pick.append(
     createElement("strong", "", leg.selection),
-    createElement("span", "odds", leg.odds || "—")
+    createElement("span", "odds", leg.odds || "-")
   );
 
   row.append(meta, pick, renderMoneyGrid(bet));
@@ -132,7 +145,7 @@ function renderParlayBet(entry, index) {
     legRow.append(
       createElement("span", "parlay-leg__number", String(legIndex + 1)),
       description,
-      createElement("span", "odds", leg.odds || "—")
+      createElement("span", "odds", leg.odds || "-")
     );
     legs.append(legRow);
   });
@@ -175,6 +188,113 @@ function reportDateLabel(report) {
   return report.dateRange || "Selected transactions";
 }
 
+function reportFileDate(report) {
+  const capturedAt = new Date(report.capturedAt);
+  const date = Number.isNaN(capturedAt.getTime()) ? new Date() : capturedAt;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function updateDocumentTitle() {
+  const title = ui.titleInput.value.trim() || "Fight Night Bets";
+  const date = reportFileDate(currentReport || { capturedAt: new Date().toISOString() });
+  document.title = `${title} - ${date}`;
+}
+
+function configureSinglePagePrint() {
+  const measurement = ui.reportPage.cloneNode(true);
+  measurement.hidden = false;
+  measurement.removeAttribute("id");
+  measurement.classList.add("page--print-measure");
+  measurement.setAttribute("aria-hidden", "true");
+  document.body.append(measurement);
+
+  const minimumHeightMillimeters = 210;
+  const contentHeightMillimeters = measurement.scrollHeight * 25.4 / 96;
+  const pageHeightMillimeters = Math.max(
+    minimumHeightMillimeters,
+    Math.ceil((contentHeightMillimeters + 12) * 10) / 10
+  );
+  measurement.remove();
+
+  const pageRule = `@page { size: 148mm ${pageHeightMillimeters}mm; margin: 0; }`;
+  const reportStyleSheet = Array.from(document.styleSheets || []).find((styleSheet) => {
+    return styleSheet.href?.endsWith("/src/report.css");
+  });
+
+  if (reportStyleSheet) {
+    try {
+      if (dynamicPrintStyleSheet === reportStyleSheet && dynamicPrintRuleIndex !== null) {
+        reportStyleSheet.deleteRule(dynamicPrintRuleIndex);
+      }
+      dynamicPrintRuleIndex = reportStyleSheet.cssRules.length;
+      reportStyleSheet.insertRule(pageRule, dynamicPrintRuleIndex);
+      dynamicPrintStyleSheet = reportStyleSheet;
+      return;
+    } catch {
+      dynamicPrintStyleSheet = null;
+      dynamicPrintRuleIndex = null;
+    }
+  }
+
+  let printSize = document.querySelector("#dynamicPrintPageSize");
+  if (!printSize) {
+    printSize = document.createElement("style");
+    printSize.id = "dynamicPrintPageSize";
+    document.head.append(printSize);
+  }
+  printSize.textContent = pageRule;
+}
+
+function printSinglePage() {
+  configureSinglePagePrint();
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => window.print());
+  });
+}
+
+async function createReportPng() {
+  if (!window.BetExporterPng) throw new Error("The PNG renderer did not load.");
+  const groups = groupBets(currentReport.bets);
+  const matchupCount = groups.filter((group) => group.type === "matchup").length;
+  return window.BetExporterPng.render({
+    report: currentReport,
+    groups,
+    title: ui.titleInput.value.trim() || "Fight Night Bets",
+    note: ui.noteInput.value.trim(),
+    dateLabel: reportDateLabel(currentReport),
+    betCount: currentReport.bets.length,
+    matchupCount,
+    totalRisk: sum(currentReport.bets, "stake"),
+    totalWin: bestCaseSum(groups, "toWin"),
+    totalPayout: bestCaseSum(groups, "payout"),
+    capturedLabel: ui.capturedLabel.textContent
+  });
+}
+
+async function downloadPng() {
+  const originalLabel = ui.downloadPng.textContent;
+  ui.downloadPng.disabled = true;
+  ui.downloadPng.textContent = "Rendering PNG…";
+
+  try {
+    const png = await createReportPng();
+    const url = URL.createObjectURL(png);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `fight-night-bets-${reportFileDate(currentReport)}.png`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (error) {
+    window.alert(error.message || "The PNG could not be created.");
+  } finally {
+    ui.downloadPng.disabled = false;
+    ui.downloadPng.textContent = originalLabel;
+  }
+}
+
 function renderReport(report) {
   currentReport = report;
   const groups = groupBets(report.bets);
@@ -187,8 +307,8 @@ function renderReport(report) {
   ui.reportNote.textContent = dateLabel;
   ui.betCount.textContent = String(report.bets.length);
   ui.totalRisk.textContent = money(sum(report.bets, "stake"));
-  ui.totalWin.textContent = money(sum(report.bets, "toWin"));
-  ui.totalPayout.textContent = money(sum(report.bets, "payout"));
+  ui.totalWin.textContent = money(bestCaseSum(groups, "toWin"));
+  ui.totalPayout.textContent = money(bestCaseSum(groups, "payout"));
   ui.matchupCount.textContent = `${matchupTotal} matchup${matchupTotal === 1 ? "" : "s"}`;
   ui.capturedLabel.textContent = `Captured ${capturedAt.toLocaleString("en-US", {
     month: "short",
@@ -200,7 +320,7 @@ function renderReport(report) {
 
   ui.fightGrid.replaceChildren(...groups.map(renderGroup));
   ui.reportPage.hidden = false;
-  document.title = `${ui.titleInput.value} — Bet Sheet`;
+  updateDocumentTitle();
 }
 
 function csvCell(value) {
@@ -241,7 +361,7 @@ function downloadCsv() {
   const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   const link = document.createElement("a");
   link.href = url;
-  link.download = `fight-night-bets-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.download = `fight-night-bets-${reportFileDate(currentReport)}.csv`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -249,7 +369,7 @@ function downloadCsv() {
 ui.titleInput.addEventListener("input", () => {
   const title = ui.titleInput.value.trim() || "Fight Night Bets";
   ui.reportTitle.textContent = title;
-  document.title = `${title} — Bet Sheet`;
+  updateDocumentTitle();
 });
 
 ui.noteInput.addEventListener("input", () => {
@@ -257,7 +377,8 @@ ui.noteInput.addEventListener("input", () => {
 });
 
 ui.downloadCsv.addEventListener("click", downloadCsv);
-ui.printReport.addEventListener("click", () => window.print());
+ui.downloadPng.addEventListener("click", downloadPng);
+ui.printReport.addEventListener("click", printSinglePage);
 
 chrome.storage.session.get("currentReport").then(({ currentReport }) => {
   if (!currentReport?.bets?.length) {
